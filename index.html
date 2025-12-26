@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway - Joki Tugas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .payment-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .payment-container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-container {
+            transform: translateY(30px);
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .payment-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffc107 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .payment-header p {
+            font-size: 1.1rem;
+            color: #b8bfd8;
+            font-weight: 300;
+        }
+
+        .payment-methods {
+            display: grid;
+            gap: 30px;
+        }
+
+        .payment-card {
+            background: #1a1f3a;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 193, 7, 0.2);
+            border-color: #ffc107;
+        }
+
+        .payment-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .payment-card-header h2 {
+            font-size: 1.5rem;
+            color: #ffc107;
+            font-weight: 700;
+        }
+
+        .payment-details {
+            display: grid;
+            gap: 20px;
+        }
+
+        .detail-item {
+            background: rgba(255, 193, 7, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .detail-item:hover {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #ffc107;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #b8bfd8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1.3rem;
+            color: #ffffff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #0a0e27;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .ewallet-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ewallet-badge {
+            background: rgba(255, 193, 7, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            font-weight: 600;
+            color: #ffc107;
+            transition: all 0.3s ease;
+        }
+
+        .ewallet-badge:hover {
+            background: rgba(255, 193, 7, 0.2);
+            transform: scale(1.05);
+        }
+
+        .confirmation-section {
+            background: linear-gradient(135deg, #1a1f3a 0%, #252b4a 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #ffc107;
+            margin-top: 30px;
+        }
+
+        .confirmation-section h3 {
+            font-size: 1.8rem;
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .confirmation-section p {
+            color: #b8bfd8;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.5);
+        }
+
+        .whatsapp-icon {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #000000;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            color: #b8bfd8;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #ffc107;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .payment-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .payment-card {
+                padding: 30px 20px;
+            }
+
+            .detail-value {
+                font-size: 1.1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+
+            .ewallet-options {
+                grid-template-columns: 1fr;
+            }
+
+            .confirmation-section {
+                padding: 30px 20px;
+            }
+
+            .whatsapp-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .payment-card-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .confirmation-section h3 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffc107, #ffb300);
+            color: #0a0e27;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-hero">
+        <div class="container">
+            <div class="payment-container">
+                <a href="https://jokitugas-day.vercel.app/" class="back-link">← Kembali ke Beranda</a>
+                
+                <div class="payment-header">
+                    <h1>Metode Pembayaran</h1>
+                    <p>Pilih metode pembayaran yang Anda inginkan untuk menyelesaikan transaksi</p>
+                </div>
+
+                <div class="payment-methods">
+                    <!-- Transfer Bank -->
+                    <div class="payment-card">
+                        <div class="payment-card-header">
+                            <div class="payment-icon">🏦</div>
+                            <h2>Transfer Bank</h2>
+                        </div>
+                        <div class="payment-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Bank</div>
+                                <div class="detail-value">
+                                    <span>Mandiri</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nomor Rekening</div>
+                                <div class="detail-value">
+                                    <span>1430030569352</span>
+                                    <button class="copy-btn" onclick="copyText('1430030569352', this)">Salin</button>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Atas Nama</div>
+                                <div class="detail-value">
+                                    <span>Ahmad Robi Faroid</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Wallet -->
+                    <div class="payment-card">
+                        <div class="payment-card-header">
+                            <div class="payment-icon">💳</div>
+                            <h2>E-Wallet</h2>
+                        </div>
+                        <div class="ewallet-options">
+                            <div class="ewallet-badge">DANA</div>
+                            <div class="ewallet-badge">ShopeePay</div>
+                            <div class="ewallet-badge">GoPay</div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Nomor E-Wallet</div>
+                                <div class="detail-value">
+                                    <span>0859184078815</span>
+                                    <button class="copy-btn" onclick="copyText('0859184078815', this)">Salin</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Section -->
+                <div class="confirmation-section">
+                    <h3>Terimakasih!</h3>
+                    <p>Silahkan lampirkan bukti transfer melalui WhatsApp untuk verifikasi pembayaran Anda</p>
+                    <a href="https://wa.me/6285918407881" class="whatsapp-btn" target="_blank">
+                        <span class="whatsapp-icon">💬</span>
+                        <span>Kirim Bukti Transfer</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 JokiTugas.day - Bantuan Akademik Profesional. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        function copyText(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                toast.textContent = '✓ Berhasil disalin!';
+                toast.classList.add('show');
+                
+                const originalText = button.textContent;
+                button.textContent = '✓ Tersalin';
+                button.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    button.textContent = originalText;
+                    button.style.background = 'linear-gradient(135deg, #ffc107, #ffb300)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Gagal menyalin:', err);
+            });
+        }
+    </script>
+</body>
+</html>
